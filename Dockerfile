@@ -1,7 +1,7 @@
 FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
-    libpng-dev libonig-dev libxml2-dev zip unzip git curl
+    ca-certificates libpng-dev libonig-dev libxml2-dev zip unzip git curl
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
@@ -13,4 +13,4 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 10000
-CMD php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=10000
+CMD php artisan migrate --force && php artisan optimize && php artisan serve --host=0.0.0.0 --port=10000

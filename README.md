@@ -21,6 +21,28 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Deploying to Render
+
+The Docker image runs `php artisan migrate --force` before starting Laravel. This creates the
+`sessions` table required by the database session driver, preventing CSRF/session mismatches
+that result in a `419 Page Expired` response at login.
+
+Set these environment variables in the Render service before deploying:
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://finora-nm5e.onrender.com
+APP_KEY=base64:your-generated-key
+SESSION_DRIVER=database
+SESSION_SECURE_COOKIE=true
+SESSION_SAME_SITE=lax
+```
+
+Generate `APP_KEY` once with `php artisan key:generate --show`, add it as a Render secret, and
+keep the same value for every subsequent deploy. Configure the `DB_*` values to point to the
+persistent MySQL database used by the service.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
