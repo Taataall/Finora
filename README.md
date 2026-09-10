@@ -37,11 +37,13 @@ APP_KEY=base64:your-generated-key
 SESSION_DRIVER=database
 SESSION_SECURE_COOKIE=true
 SESSION_SAME_SITE=lax
+MYSQL_ATTR_SSL_VERIFY_SERVER_CERT=false
 ```
 
 Generate `APP_KEY` once with `php artisan key:generate --show`, add it as a Render secret, and
 keep the same value for every subsequent deploy. Configure the `DB_*` values to point to the
-persistent MySQL database used by the service.
+persistent MySQL database used by the service. For Aiven MySQL, the Docker image supplies the
+system CA bundle; set `MYSQL_ATTR_SSL_CA` only when Aiven provides a custom CA certificate path.
 
 ## Learning Laravel
 

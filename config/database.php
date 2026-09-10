@@ -3,6 +3,12 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+$mysqlSslCa = env('MYSQL_ATTR_SSL_CA');
+
+if ($mysqlSslCa === null && is_file('/etc/ssl/certs/ca-certificates.crt')) {
+    $mysqlSslCa = '/etc/ssl/certs/ca-certificates.crt';
+}
+
 return [
 
     /*
@@ -60,9 +66,9 @@ return [
     'strict' => true,
     'engine' => null,
     'options' => extension_loaded('pdo_mysql') ? array_filter([
-        (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
-        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-    ]) : [],
+        (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => $mysqlSslCa,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false),
+    ], static fn ($value) => $value !== null && $value !== '') : [],
 ],
 
         'mariadb' => [
